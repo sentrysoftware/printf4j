@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
 
 /**
  * <p><b>Printf4J</b></p>
- * 
+ *
  * A utility class that provides the equivalent to C's *printf() functions.
  * <p>
  * Printf4J differs from {@link java.lang.String#format(String, Object...)}
@@ -43,6 +43,13 @@ import java.util.regex.Pattern;
  * </ul>
  */
 public class Printf4J {
+
+	/**
+	 * No constructor
+	 */
+	protected Printf4J() {
+		throw new UnsupportedOperationException();
+	}
 
 	/**
 	 * Regular expression matching with sprintf fields
@@ -66,7 +73,7 @@ public class Printf4J {
 			+ "(?<other>[bBhHsScCtT]|"
 			+ "(?:L?(?<float>[eEfFgGaA]))|"
 			+ "(?:(?:hh|h|l|ll|j|z|t)?(?<int>[diuoxX]))))");
-	
+
 
 	/**
 	 * Convert a String, Integer, or Double to Double.
@@ -75,7 +82,7 @@ public class Printf4J {
 	 *
 	 * @return the "double" value of o, or 0 if invalid
 	 */
-	public static double toDouble(Object o) {
+	public static double toDouble(final Object o) {
 		if (o instanceof Number) {
 			return ((Number) o).doubleValue();
 		} else {
@@ -88,8 +95,9 @@ public class Printf4J {
 				try {
 					return Double.parseDouble(s);
 				} catch (NumberFormatException nfe) {
+					s = s.substring(0, s.length() - 1);
 				}
-				s = s.substring(0, s.length() - 1);
+
 			}
 			// Failed (not even with one char)
 			return 0;
@@ -103,7 +111,7 @@ public class Printf4J {
 	 *
 	 * @return the "long" value of o, or 0 if invalid
 	 */
-	public static long toLong(Object o) {
+	public static long toLong(final Object o) {
 		if (o instanceof Number) {
 			return ((Number)o).longValue();
 		} else {
@@ -122,40 +130,40 @@ public class Printf4J {
 	 * String.format() is adapted to behave like C's sprintf()
 	 *
 	 * @param locale a {@link java.util.Locale} object
-	 * @param fmt_arg The format string to apply.
+	 * @param format The format string to apply.
 	 * @param arr Arguments to format.
 	 * @return The formatted string
 	 */
-	public static String sprintf(Locale locale, String fmt_arg, Object... arr) {
+	public static String sprintf(final Locale locale, final String format, final Object... arr) {
 
 		// We're processing each format specifier (%d, %-12s, etc.) and will slightly
 		// adapt the behavior of Java's Formatter to be like C's sprintf()
-		Matcher percentMatcher = PERCENT_PATTERN.matcher(fmt_arg);
-		
+		Matcher percentMatcher = PERCENT_PATTERN.matcher(format);
+
 		// Result will be hold in a StringBuilder
 		StringBuilder formatResultBuilder = new StringBuilder();
-		
+
 		// We will use a single Formatter instance (closeable)
 		try (Formatter formatter = new Formatter(formatResultBuilder, locale)) {
-			
+
 			// Each argument is indexed and will match with the format specifiers we will find
 			int argumentIndex = 0;
-			
+
 			// Loop through each matching format specifier
 			while (percentMatcher.find()) {
-				
+
 				// Easy: %% -> %
 				if (percentMatcher.group("percent") != null) {
 					percentMatcher.appendReplacement(formatResultBuilder, "%");
 					continue;
 				}
-				
+
 				// Easy: %n -> \n (always \n, and not system's EOL
 				if (percentMatcher.group("eol") != null) {
 					percentMatcher.appendReplacement(formatResultBuilder, "\n");
 					continue;
 				}
-				
+
 				// Extract the properties of the format specifier from the regex pattern
 				String formatSpecifier = percentMatcher.group("specifier");
 				String options = percentMatcher.group("options");
@@ -169,7 +177,7 @@ public class Printf4J {
 						conversion = percentMatcher.group("other");
 					}
 				}
-				
+
 				// Dummy case: we don't have enough arguments to fill the format specifiers!
 				if (argumentIndex >= arr.length) {
 					// Simply append the format specifier "as is"
@@ -250,7 +258,7 @@ public class Printf4J {
 					}
 					width = String.valueOf(newWidth);
 				}
-				
+
 				// Recheck if we're running out of arguments
 				if (argumentIndex >= arr.length) {
 					// Simply append the format specifier "as is"
@@ -268,16 +276,16 @@ public class Printf4J {
 				if (precision != null) { newFormatSpecifierBuilder.append('.').append(precision); }
 				newFormatSpecifierBuilder.append(conversion);
 				formatSpecifier = newFormatSpecifierBuilder.toString();
-				
+
 				// The logic will differ for each conversion type
 				switch (conversion) {
-				
+
 				// %s: simple
 				case "s":
 					percentMatcher.appendReplacement(formatResultBuilder, "");
 					formatter.format(formatSpecifier, arr[argumentIndex]);
 					break;
-				
+
 				// Integers: a bit more complicated!
 				case "d":
 				case "x":
@@ -291,7 +299,7 @@ public class Printf4J {
 						percentMatcher.appendReplacement(formatResultBuilder, "");
 						formatter.format(formatSpecifier, toLong(arr[argumentIndex]));
 						break;
-						
+
 					} else {
 						// If precision is specified, we need to process this case manually
 						// because Java's formatter doesn't support specifying precision for
@@ -313,11 +321,11 @@ public class Printf4J {
 							}
 							// For negative number, increase precision by 1, because it's going to be used
 							// as width
-							if ("d".equals(conversion)) {
-								if (toLong(arr[argumentIndex]) < 0 ||
-									(options != null && options.contains("+"))) {
-									precision = Integer.toString((Integer.valueOf(precision) + 1));
-								}
+							if ("d".equals(conversion)
+								&& (toLong(arr[argumentIndex]) < 0
+									|| options != null && options.contains("+")))
+							{
+								precision = Integer.toString(Integer.valueOf(precision) + 1);
 							}
 							integerFormatStringBuilder.append(precision);
 							integerFormatStringBuilder.append(conversion);
@@ -342,7 +350,7 @@ public class Printf4J {
 						formatter.format("%" + width + "s", renderedPrecision);
 					}
 					break;
-				
+
 				// Float and double: simple, we just need to make sure to pass a double
 				case "e":
 				case "E":
@@ -352,7 +360,7 @@ public class Printf4J {
 					percentMatcher.appendReplacement(formatResultBuilder, "");
 					formatter.format(formatSpecifier, toDouble(arr[argumentIndex]));
 					break;
-				
+
 				// %g is a bit tricky: if the result of the formatting is a simple decimal notation
 				// we need to remove the trailing zeroes that Java adds for nothing (like 2.00000)
 				case "g":
@@ -368,7 +376,7 @@ public class Printf4J {
 					}
 					percentMatcher.appendReplacement(formatResultBuilder, tempFormatResult);
 					break;
-					
+
 				default:
 					percentMatcher.appendReplacement(formatResultBuilder, "");
 					formatter.format(formatSpecifier, arr[argumentIndex]);
@@ -378,26 +386,26 @@ public class Printf4J {
 				argumentIndex++;
 			}
 		} catch (IllegalFormatException e) { /* do nothing */ }
-		
+
 		// Now append the rest that didn't match our pattern
 		percentMatcher.appendTail(formatResultBuilder);
-		
+
 		// The result!
 		return formatResultBuilder.toString();
 
 	}
-	
+
 	/**
 	 * Applies a format string to a set of parameters and
 	 * returns the formatted result.
 	 * String.format() is adapted to behave like C's sprintf()
 	 *
-	 * @param fmt_arg The format string to apply.
+	 * @param format The format string to apply.
 	 * @param arr Arguments to format.
 	 * @return The formatted string
 	 */
-	public static String sprintf(String fmt_arg, Object... arr) {
-		return sprintf(Locale.ENGLISH, fmt_arg, arr);
+	public static String sprintf(final String format, final Object... arr) {
+		return sprintf(Locale.ENGLISH, format, arr);
 	}
 
 	/**
@@ -406,11 +414,11 @@ public class Printf4J {
 	 * String.format() is adapted to behave like C's sprintf()
 	 *
 	 * @param locale a {@link java.util.Locale} object
-	 * @param fmt_arg The format string to apply.
+	 * @param format The format string to apply.
 	 * @param arr Arguments to format.
 	 */
-	public static void printf(Locale locale, String fmt_arg, Object... arr) {
-		System.out.print(sprintf(locale, fmt_arg, arr));
+	public static void printf(final Locale locale, final String format, final Object... arr) {
+		System.out.print(sprintf(locale, format, arr));
 	}
 
 	/**
@@ -420,11 +428,11 @@ public class Printf4J {
 	 *
 	 * @param ps PrintStream to print to
 	 * @param locale a {@link java.util.Locale} object
-	 * @param fmt_arg The format string to apply.
+	 * @param format The format string to apply.
 	 * @param arr Arguments to format.
 	 */
-	public static void printf(PrintStream ps, Locale locale, String fmt_arg, Object... arr) {
-		ps.print(sprintf(locale, fmt_arg, arr));
+	public static void printf(final PrintStream ps, final Locale locale, final String format, final Object... arr) {
+		ps.print(sprintf(locale, format, arr));
 	}
 
 

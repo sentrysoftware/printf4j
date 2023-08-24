@@ -282,7 +282,16 @@
 			<id>ci-cd</id>
 			<build>
 				<plugins>
-					<!-- gpg -->
+				</plugins>
+			</build>
+		</profile>
+
+		<!-- Profile for releasing the project -->
+		<profile>
+			<id>release</id>
+			<build>
+				<plugins>
+					<!-- gpg to sign the released artifacts -->
 					<plugin>
 						<artifactId>maven-gpg-plugin</artifactId>
 						<version>3.1.0</version>
@@ -294,6 +303,7 @@
 									<goal>sign</goal>
 								</goals>
 								<configuration>
+									<updateReleaseInfo>true</updateReleaseInfo>
 									<gpgArguments>
 										<arg>--pinentry-mode</arg>
 										<arg>loopback</arg>
@@ -302,15 +312,8 @@
 							</execution>
 						</executions>
 					</plugin>
-				</plugins>
-			</build>
-		</profile>
 
-		<!-- Profile for releasing the project -->
-		<profile>
-			<id>release</id>
-			<build>
-				<plugins>
+					<!-- nexus-staging (Sonatype) -->
 					<plugin>
 						<groupId>org.sonatype.plugins</groupId>
 						<artifactId>nexus-staging-maven-plugin</artifactId>
@@ -322,6 +325,8 @@
 							<autoReleaseAfterClose>${env.AUTO_RELEASE_AFTER_CLOSE}</autoReleaseAfterClose>
 						</configuration>
 					</plugin>
+
+					<!-- release -->
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-release-plugin</artifactId>

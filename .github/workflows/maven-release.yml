@@ -58,7 +58,6 @@ jobs:
           -Prelease \
           release:clean \
           release:prepare \
-          -s settings.xml \
           -Dgpg.passphrase=${{ secrets.MAVEN_GPG_PASSPHRASE }} \
           -DreleaseVersion=${{ github.event.inputs.releaseVersion }} \
           -DdevelopmentVersion=${{ github.event.inputs.developmentVersion }} \
@@ -68,14 +67,12 @@ jobs:
         mvn -B -U \
           -Prelease \
           release:rollback \
-          -s settings.xml
       if: always() && (steps.prepare.outcome == 'failure')
     - name: Release With Maven
       run: |
         mvn -B -U \
           -Prelease \
           release:perform \
-          -s settings.xml \
           -Dgpg.passphrase=${{ secrets.MAVEN_GPG_PASSPHRASE }} \
           -DreleaseVersion=${{ github.event.inputs.releaseVersion }} \
           -DdevelopmentVersion=${{ github.event.inputs.developmentVersion }} \

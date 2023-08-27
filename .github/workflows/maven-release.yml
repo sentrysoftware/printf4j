@@ -62,7 +62,8 @@ jobs:
           -Prelease \
           release:clean \
           release:prepare \
-          -Dgpg.passphrase=${{ secrets.MAVEN_GPG_PASSPHRASE }} \
+          -Dgpg.passphraseServerId=gpg.passphrase \
+          -Darguments=-Dgpg.passphraseServerId=gpg.passphrase \
           -DreleaseVersion=${{ github.event.inputs.releaseVersion }} \
           -DdevelopmentVersion=${{ github.event.inputs.developmentVersion }} \
           -Dresume=false
@@ -72,7 +73,8 @@ jobs:
         mvn -B -U \
           -Prelease \
           release:perform \
-          -Dgpg.passphrase=${{ secrets.MAVEN_GPG_PASSPHRASE }} \
+          -Dgpg.passphraseServerId=gpg.passphrase \
+          -Darguments=-Dgpg.passphraseServerId=gpg.passphrase \
           -DreleaseVersion=${{ github.event.inputs.releaseVersion }} \
           -DdevelopmentVersion=${{ github.event.inputs.developmentVersion }} \
           deploy

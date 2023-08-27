@@ -335,14 +335,6 @@
 						<configuration>
 							<tagNameFormat>v@{project.version}</tagNameFormat>
 						</configuration>
-						<executions>
-							<execution>
-								<id>default</id>
-								<goals>
-									<goal>perform</goal>
-								</goals>
-							</execution>
-						</executions>
 					</plugin>
 				</plugins>
 			</build>

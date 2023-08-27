@@ -41,7 +41,7 @@ jobs:
         cache: 'maven'
         server-id: ossrh
         server-username: ${{ secrets.OSSRH_USERNAME }}
-        server-password: ${{ secrets.OSSRH_TOKEN }}
+        server-password: OSSRH_TOKEN
         gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
         gpg-passphrase: MAVEN_GPG_PASSPHRASE
     - name: Configure Git User
@@ -69,6 +69,7 @@ jobs:
           -Dresume=false
       env:
         MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+        OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
     - name: Release With Maven
       id: release
       run: |
@@ -83,6 +84,7 @@ jobs:
       env:
         AUTO_RELEASE_AFTER_CLOSE: ${{ github.event.inputs.autoRelease }}
         MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+        OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
     - name: Release rollback because prepation failed
       run: |
         mvn -B -U \

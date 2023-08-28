@@ -112,7 +112,7 @@ jobs:
           release:rollback \
       if: always() && (steps.prepare.outcome == 'failure' || steps.release.outcome == 'failure')
 
-    - name: List staging repositories
+    - name: Summary with staging repositories and buildinfo
       id: stagingList
       run: |
         echo "# Staging Repositories" >> $GITHUB_STEP_SUMMARY
@@ -120,6 +120,10 @@ jobs:
         mvn -B -U \
           -Prelease \
           org.sonatype.plugins:nexus-staging-maven-plugin:rc-list >> $GITHUB_STEP_SUMMARY
+        echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+        echo "# Buildinfo" >> $GITHUB_STEP_SUMMARY
+        echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+        cat target/*.buildinfo >> $GITHUB_STEP_SUMMARY
         echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
       env:
         OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}

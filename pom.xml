@@ -4,7 +4,7 @@
 	<groupId>org.sentrysoftware</groupId>
 	<artifactId>printf4j</artifactId>
 	<name>Printf4J</name>
-	<version>0.9.02-SNAPSHOT</version>
+	<version>0.9.03-SNAPSHOT</version>
 	<description>Java implementation of C's *printf() functions</description>
   <packaging>jar</packaging>
 

@@ -127,7 +127,7 @@ jobs:
 
     - name: Create Pull Request
       run: |
-        ACCESS_TOKEN=$GITHUB_TOKEN
+        ACCESS_TOKEN=${{ github.token }}
         BASE_BRANCH=${{ github.event.repository.default_branch }}
         HEAD_BRANCH=${{ env.branchName }}
         PR_TITLE="Release v${{ github.event.inputs.releaseVersion }} and prepare v${{ github.event.inputs.developmentVersion }}"

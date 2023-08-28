@@ -52,7 +52,7 @@ jobs:
     - name: Create release branch
       run: |
         git checkout release/${{ github.event.inputs.releaseVersion }} 2>/dev/null || git checkout -b release/${{ github.event.inputs.releaseVersion }}
-        git push origin
+        git push origin release/${{ github.event.inputs.releaseVersion }}
     - name: Clean up existing release tags
       run: |
         git tag -d v${{ github.event.inputs.releaseVersion }} || true

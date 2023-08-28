@@ -301,7 +301,26 @@
 			<id>release</id>
 			<build>
 				<plugins>
-						<!-- gpg to sign the released artifacts -->
+
+					<!-- artifact (Reproducible Build) -->
+					<plugin>
+						<artifactId>maven-artifact-plugin</artifactId>
+						<version>3.4.1</version>
+						<executions>
+							<execution>
+								<id>buildinfo</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>buildinfo</goal>
+								</goals>
+								<configuration>
+									<reproducible>true</reproducible>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+
+					<!-- gpg to sign the released artifacts -->
 					<plugin>
 						<artifactId>maven-gpg-plugin</artifactId>
 						<version>3.1.0</version>
@@ -318,24 +337,6 @@
 										<arg>--pinentry-mode</arg>
 										<arg>loopback</arg>
 									</gpgArguments>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-
-					<!-- artifact (Reproducible Build) -->
-					<plugin>
-						<artifactId>maven-artifact-plugin</artifactId>
-						<version>3.4.1</version>
-						<executions>
-							<execution>
-								<id>buildinfo</id>
-								<phase>verify</phase>
-								<goals>
-									<goal>buildinfo</goal>
-								</goals>
-								<configuration>
-									<reproducible>true</reproducible>
 								</configuration>
 							</execution>
 						</executions>

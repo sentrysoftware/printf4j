@@ -103,3 +103,5 @@ jobs:
           Automated release
           - Release v${{ github.event.inputs.releaseVersion }} 
           - Prepare v${{ github.event.inputs.developmentVersion }}
+        branch: release/${{ github.event.inputs.releaseVersion }}
+        base: main

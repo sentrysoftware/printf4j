@@ -112,6 +112,19 @@ jobs:
           release:rollback \
       if: always() && (steps.prepare.outcome == 'failure' || steps.release.outcome == 'failure')
 
+    - name: List staging repositories
+      id: stagingList
+      run: |
+        echo "# Staging Repositories" >> $GITHUB_STEP_SUMMARY
+        echo "```" >> $GITHUB_STEP_SUMMARY
+        mvn -B -U \
+          -Prelease \
+          org.sonatype.plugins:nexus-staging-maven-plugin:rc-list >> $GITHUB_STEP_SUMMARY
+        echo "```" >> $GITHUB_STEP_SUMMARY
+      env:
+        OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+        OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
+
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@v5
       with:

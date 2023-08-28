@@ -13,17 +13,18 @@ on:
         required: true
         default: ""
       developmentVersion:
-        description: "New version in development (with SNAPSHOT)"
+        description: "New SNAPSHOT version"
         required: true
         default: ""
       autoRelease:
-        description: "Automatic release from staging repository?"
+        description: "Release staging repository immediately?"
         required: true
         type: boolean
         default: false
 
 jobs:
-  build:
+  release:
+    name: Release ${{ github.event.inputs.releaseVersion }}
     
     runs-on: ubuntu-latest
     
@@ -51,6 +52,7 @@ jobs:
     - name: Create release branch
       run: |
         git checkout release/${{ github.event.inputs.releaseVersion }} 2>/dev/null || git checkout -b release/${{ github.event.inputs.releaseVersion }}
+        git push origin
     - name: Clean up existing release tags
       run: |
         git tag -d v${{ github.event.inputs.releaseVersion }} || true

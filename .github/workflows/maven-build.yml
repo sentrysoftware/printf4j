@@ -1,4 +1,4 @@
-name: Maven Package
+name: Maven Build
 
 on:
   pull_request:

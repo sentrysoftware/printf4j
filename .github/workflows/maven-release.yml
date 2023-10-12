@@ -1,7 +1,8 @@
 # This workflow releases the project on Maven Central
 # and prepare a new development version
 
-name: Release
+name: Release to Maven Central
+run-name: Release ${{ inputs.releaseVersion }} to Maven Central
 
 on:
   #push:
@@ -71,13 +72,14 @@ jobs:
         git tag -d ${{ env.tagName }} || true
         git push origin :refs/tags/${{ env.tagName }} || true
 
-    - name: Prepare release with Maven
+    - name: Prepare release
       id: prepare
       run: |
         mvn -B -U \
           -Prelease \
           release:clean \
           release:prepare \
+          -DpreparationGoals="clean verify site" \
           -Dgpg.passphraseServerId=gpg.passphrase \
           -Darguments=-Dgpg.passphraseServerId=gpg.passphrase \
           -DreleaseVersion=${{ github.event.inputs.releaseVersion }} \
@@ -88,17 +90,18 @@ jobs:
         OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
         OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
 
-    - name: Release With Maven
+    - name: Perform release to Maven Central
       id: release
       run: |
         mvn -B -U \
           -Prelease \
           release:perform \
+          -Dgoals="deploy site" \
+          -DworkingDirectory=$GITHUB_WORKSPACE/target/release
           -Dgpg.passphraseServerId=gpg.passphrase \
           -Darguments=-Dgpg.passphraseServerId=gpg.passphrase \
           -DreleaseVersion=${{ github.event.inputs.releaseVersion }} \
           -DdevelopmentVersion=${{ github.event.inputs.developmentVersion }} \
-          deploy
       env:
         AUTO_RELEASE_AFTER_CLOSE: ${{ github.event.inputs.autoRelease }}
         MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
@@ -111,6 +114,15 @@ jobs:
           -Prelease \
           release:rollback \
       if: always() && (steps.prepare.outcome == 'failure' || steps.release.outcome == 'failure')
+
+    - name: Setup Pages
+      id: pages
+      uses: actions/configure-pages@v3
+    
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v2
+      with:
+        path: ./target/release/target/site
 
     - name: Summary with staging repositories and buildinfo
       id: stagingList
@@ -129,6 +141,12 @@ jobs:
         OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
         OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
 
+  # Pull Request from release branch to main
+  pull-request:
+    name: Create Pull Request from ${{ env.branchName }} to ${{ github.event.repository.default_branch }}
+    needs: release
+    runs-on: ubuntu-latest
+    steps:
     - name: Create Pull Request
       run: |
         ACCESS_TOKEN=${{ github.token }}
@@ -138,9 +156,22 @@ jobs:
         PR_BODY="Automated release \
           - Release v${{ github.event.inputs.releaseVersion }} \
           - Prepare v${{ github.event.inputs.developmentVersion }}"
- 
+
         curl -X POST \
           -H "Authorization: token $ACCESS_TOKEN" \
           -H "Content-Type: application/json" \
           -d "{\"title\":\"$PR_TITLE\",\"body\":\"$PR_BODY\",\"head\":\"$HEAD_BRANCH\",\"base\":\"$BASE_BRANCH\"}" \
           "https://api.github.com/repos/$GITHUB_REPOSITORY/pulls"
+  
+  # Deployment job
+  deploy:
+    name: Deploy GitHub Pages
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: release
+    steps:
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v2

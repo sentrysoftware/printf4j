@@ -156,11 +156,11 @@ jobs:
 
   # Pull Request from release branch to main
   pull-request:
-    name: Create Pull Request from ${{ env.branchName }} to ${{ github.event.repository.default_branch }}
+    name: Create Pull Request
     needs: release
     runs-on: ubuntu-latest
     steps:
-    - name: Create Pull Request
+    - name: Create Pull Request from ${{ env.branchName }} to ${{ github.event.repository.default_branch }}
       run: |
         ACCESS_TOKEN=${{ github.token }}
         BASE_BRANCH=${{ github.event.repository.default_branch }}

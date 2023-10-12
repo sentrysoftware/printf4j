@@ -2,7 +2,7 @@
 # and prepare a new development version
 
 name: Release to Maven Central
-run-name: Release ${{ inputs.releaseVersion }} to Maven Central
+run-name: Release v${{ inputs.releaseVersion }} to Maven Central
 
 on:
   #push:
@@ -23,15 +23,28 @@ on:
         type: boolean
         default: false
 
+permissions:
+  contents: write
+  pull-requests: write
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these releases and deployments to complete.
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+# Default to bash
+defaults:
+  run:
+    shell: bash
+    
 jobs:
   release:
-    name: Release ${{ github.event.inputs.releaseVersion }}
+    name: Release v${{ github.event.inputs.releaseVersion }}
     
     runs-on: ubuntu-latest
-    
-    permissions:
-      contents: write
-      pull-requests: write
     
     steps:
     

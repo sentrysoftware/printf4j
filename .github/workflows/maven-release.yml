@@ -110,7 +110,7 @@ jobs:
           -Prelease \
           release:perform \
           -Dgoals="deploy site" \
-          -DworkingDirectory=$GITHUB_WORKSPACE/target/release
+          -DworkingDirectory=$GITHUB_WORKSPACE/target/release \
           -Dgpg.passphraseServerId=gpg.passphrase \
           -Darguments=-Dgpg.passphraseServerId=gpg.passphrase \
           -DreleaseVersion=${{ github.event.inputs.releaseVersion }} \

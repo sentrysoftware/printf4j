@@ -167,12 +167,6 @@ jobs:
         OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
         OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
 
-  # Pull Request from release branch to main
-  pull-request:
-    name: Create Pull Request
-    needs: release
-    runs-on: ubuntu-latest
-    steps:
     - name: Create Pull Request from ${{ needs.release.outputs.branchName }} to ${{ github.event.repository.default_branch }}
       run: |
         gh pr create \
@@ -190,7 +184,7 @@ jobs:
             
             * Release **v${{ github.event.inputs.releaseVersion }}**
             * Prepare **v${{ github.event.inputs.developmentVersion }}**
-          
+
   # Deployment job
   deploy:
     name: Deploy GitHub Pages

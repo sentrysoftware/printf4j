@@ -4,7 +4,7 @@
 	<groupId>org.sentrysoftware</groupId>
 	<artifactId>printf4j</artifactId>
 	<name>Printf4J</name>
-	<version>0.9.04-SNAPSHOT</version>
+	<version>0.9.04</version>
 	<description>Java implementation of C's *printf() functions</description>
   <packaging>jar</packaging>
 
@@ -42,7 +42,7 @@
 	<scm>
 		<connection>scm:git:https://github.com/sentrysoftware/printf4j.git</connection>
 		<url>https://github.com/sentrysoftware/printf4j</url>
-		<tag>HEAD</tag>
+		<tag>v0.9.04</tag>
 	</scm>
 
 	<developers>
@@ -68,7 +68,7 @@
 
 		<!-- Reproducible Build -->
 		<!-- See https://maven.apache.org/guides/mini/guide-reproducible-builds.html -->
-		<project.build.outputTimestamp>2023-01-01T00:00:00Z</project.build.outputTimestamp>
+		<project.build.outputTimestamp>2023-10-25T17:09:31Z</project.build.outputTimestamp>
 	</properties>
 
 	<dependencyManagement>

@@ -231,7 +231,7 @@
 			<!-- checkstyle -->
 			<plugin>
 				<artifactId>maven-checkstyle-plugin</artifactId>
-				<version>3.3.0</version>
+				<version>3.3.1</version>
 				<configuration>
 					<sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>
 					<linkXref>true</linkXref>

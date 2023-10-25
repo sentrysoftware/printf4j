@@ -168,22 +168,20 @@ jobs:
         OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
 
     - name: Create Pull Request from ${{ needs.release.outputs.branchName }} to ${{ github.event.repository.default_branch }}
-      run: |
-        gh pr create \
-        -B $BASE_BRANCH \
-        -H $HEAD_BRANCH \
-        --title "$PR_TITLE" \
-        --body "$PR_BODY"
-      env:
-          GITHUB_TOKEN: ${{ github.token }}
-          BASE_BRANCH: ${{ github.event.repository.default_branch }}
-          HEAD_BRANCH: ${{ needs.release.outputs.branchName }}
-          PR_TITLE: Release v${{ github.event.inputs.releaseVersion }} and prepare v${{ github.event.inputs.developmentVersion }}
-          PR_BODY: |
-            ## Automated release
-            
-            * Release **v${{ github.event.inputs.releaseVersion }}**
-            * Prepare **v${{ github.event.inputs.developmentVersion }}**
+      uses: devops-infra/action-pull-request@v0.5.5
+      with:
+        github_token: ${{ github.token }}
+        source_branch: ${{ needs.release.outputs.branchName }}
+        target_branch: ${{ github.event.repository.default_branch }}
+        title: Release v${{ github.event.inputs.releaseVersion }} and prepare v${{ github.event.inputs.developmentVersion }}
+        body: |
+          ## Automated release
+          
+          * Release **v${{ github.event.inputs.releaseVersion }}**
+          * Prepare **v${{ github.event.inputs.developmentVersion }}**
+        label: automatic
+        get_diff: true
+        allow_no_diff: true
 
   # Deployment job
   deploy:

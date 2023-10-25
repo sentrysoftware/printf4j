@@ -21,6 +21,6 @@ jobs:
     uses: sentrysoftware/workflows/.github/workflows/maven-central-release.yml@main
     with:
       releaseVersion: ${{ inputs.releaseVersion }}
-      developmentVersion: ${{ input.developmentVersion }}
+      developmentVersion: ${{ inputs.developmentVersion }}
       autoRelease: false
       jdkVersion: "17"

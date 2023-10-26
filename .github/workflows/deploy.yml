@@ -9,7 +9,7 @@ on:
     branches: [ "develop", "main" ]
 
 jobs:
-  release:
+  deploy:
     uses: sentrysoftware/workflows/.github/workflows/maven-central-deploy.yml@main
     with:
       jdkVersion: "17"

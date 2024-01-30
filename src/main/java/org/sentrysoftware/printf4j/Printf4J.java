@@ -442,6 +442,12 @@ public class Printf4J {
 					percentMatcher.appendReplacement(formatResultBuilder, tempFormatResult);
 					break;
 
+				// Char: simple, we just need to make sure to pass a char or integer
+				case "c":
+					percentMatcher.appendReplacement(formatResultBuilder, "");
+					formatter.format(formatSpecifier, toChar(arr[argumentIndex]));
+					break;
+
 				default:
 					percentMatcher.appendReplacement(formatResultBuilder, "");
 					formatter.format(formatSpecifier, arr[argumentIndex]);

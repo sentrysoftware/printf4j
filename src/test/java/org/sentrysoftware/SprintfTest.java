@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.sentrysoftware.printf4j.Printf4J;
 
 import static org.sentrysoftware.printf4j.Printf4J.*;
 
@@ -495,4 +496,77 @@ public class SprintfTest {
 		assertEquals("3.33e-01", sprintf("%.*e", 2, 0.33333333));
 	}
 	
+	@Test
+	public void testChar() {
+		assertEquals("A", sprintf("%c", 65));
+		assertEquals("A", sprintf("%c", 65L));
+		assertEquals("A", sprintf("%c", 65.0));
+		assertEquals("A", sprintf("%c", 65.1));
+		assertEquals("A", sprintf("%c", Integer.valueOf(65)));
+		assertEquals("A", sprintf("%c", Long.valueOf(65)));
+		assertEquals("A", sprintf("%c", Float.valueOf(65)));
+		assertEquals("A", sprintf("%c", Double.valueOf(65)));
+		assertEquals("6", sprintf("%c", "65"));
+		Object nothing = null;
+		assertEquals("\u0000", sprintf("%c", nothing));
+	}
+	
+	@Test
+	public void testToChar() {
+		assertEquals('A', Printf4J.toChar(65));
+		assertEquals('A', Printf4J.toChar(65L));
+		assertEquals('A', Printf4J.toChar(65.0));
+		assertEquals('A', Printf4J.toChar(65.1));
+		assertEquals('A', Printf4J.toChar(65.9));
+		assertEquals('A', Printf4J.toChar(Integer.valueOf(65)));
+		assertEquals('A', Printf4J.toChar(Long.valueOf(65)));
+		assertEquals('A', Printf4J.toChar(Float.valueOf(65)));
+		assertEquals('A', Printf4J.toChar(Double.valueOf(65)));
+		assertEquals('6', Printf4J.toChar("65"));
+		assertEquals('\u0000', Printf4J.toChar(""));
+		Object nothing = null;
+		assertEquals('\u0000', Printf4J.toChar(nothing));
+	}
+	
+	@Test
+	public void testToLong() {
+		assertEquals(65L, Printf4J.toLong('A'));
+		assertEquals(65L, Printf4J.toLong(65));
+		assertEquals(65L, Printf4J.toLong(65L));
+		assertEquals(65L, Printf4J.toLong(65.0));
+		assertEquals(65L, Printf4J.toLong(65.1));
+		assertEquals(65L, Printf4J.toLong(65.9));
+		assertEquals(65L, Printf4J.toLong(Integer.valueOf(65)));
+		assertEquals(65L, Printf4J.toLong(Long.valueOf(65)));
+		assertEquals(65L, Printf4J.toLong(Float.valueOf(65)));
+		assertEquals(65L, Printf4J.toLong(Double.valueOf(65)));
+		assertEquals(65L, Printf4J.toLong("65"));
+		assertEquals(65L, Printf4J.toLong("65A"));
+		assertEquals(65L, Printf4J.toLong("65A6666666666666666666666666600000000033333333333999999999999"));
+		assertEquals(0L, Printf4J.toLong(""));
+		Object nothing = null;
+		assertEquals(0L, Printf4J.toLong(nothing));
+	}
+	
+	@Test
+	public void testToDouble() {
+		assertEquals(65.0, Printf4J.toDouble('A'));
+		assertEquals(65.0, Printf4J.toDouble(65));
+		assertEquals(65.0, Printf4J.toDouble(65L));
+		assertEquals(65.0, Printf4J.toDouble(65.0));
+		assertEquals(65.1, Printf4J.toDouble(65.1));
+		assertEquals(65.9, Printf4J.toDouble(65.9));
+		assertEquals(65.0, Printf4J.toDouble(Integer.valueOf(65)));
+		assertEquals(65.0, Printf4J.toDouble(Long.valueOf(65)));
+		assertEquals(65.0, Printf4J.toDouble(Float.valueOf(65)));
+		assertEquals(65.0, Printf4J.toDouble(Double.valueOf(65)));
+		assertEquals(65.0, Printf4J.toDouble("65"));
+		assertEquals(65.0, Printf4J.toDouble("65A"));
+		assertEquals(65.0, Printf4J.toDouble("65A6666666666666666666666666600000000033333333333999999999999"));
+		assertEquals(65.0, Printf4J.toDouble("6.5E+1"));
+		assertEquals(0.0, Printf4J.toDouble(""));
+		Object nothing = null;
+		assertEquals(0.0, Printf4J.toDouble(nothing));
+	}
+
 }

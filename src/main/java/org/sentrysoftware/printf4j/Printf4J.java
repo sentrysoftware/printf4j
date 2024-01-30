@@ -312,12 +312,12 @@ public class Printf4J {
 				}
 				// '*' width uses an argument
 				if ("*".equals(width)) {
-					width = Integer.valueOf((int)arr[argumentIndex]).toString();
+					width = String.valueOf((int)arr[argumentIndex]);
 					argumentIndex++;
 				}
 				// If width is specified, reduce it by the length of the prefix
 				if (width != null && prefix != null) {
-					int newWidth = Integer.valueOf(width) - prefix.length();
+					int newWidth = Integer.parseInt(width) - prefix.length();
 					if (newWidth < 0) {
 						newWidth = 0;
 					}
@@ -390,7 +390,7 @@ public class Printf4J {
 								&& (toLong(arr[argumentIndex]) < 0
 									|| options != null && options.contains("+")))
 							{
-								precision = Integer.toString(Integer.valueOf(precision) + 1);
+								precision = String.valueOf(Integer.parseInt(precision) + 1);
 							}
 							integerFormatStringBuilder.append(precision);
 							integerFormatStringBuilder.append(conversion);

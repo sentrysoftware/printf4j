@@ -83,25 +83,42 @@ public class Printf4J {
 	 * @return the "double" value of o, or 0 if invalid
 	 */
 	public static double toDouble(final Object o) {
-		if (o instanceof Number) {
-			return ((Number) o).doubleValue();
-		} else {
-			// Try to convert the string to a number.
-			// If failed, try with one character less.
-			// 25fix will convert to 25 (any numeric prefix
-			// will work)
-			String s = o.toString();
-			while (s.length() > 0) {
-				try {
-					return Double.parseDouble(s);
-				} catch (NumberFormatException nfe) {
-					s = s.substring(0, s.length() - 1);
-				}
 
-			}
-			// Failed (not even with one char)
+		if (o == null) {
 			return 0;
 		}
+
+		if (o instanceof Number) {
+			return ((Number) o).doubleValue();
+		}
+
+		if (o instanceof Character) {
+			return (double)((Character)o).charValue();
+		}
+
+		// Try to convert the string to a number.
+		String s = o.toString();
+		int length = s.length();
+
+		// Optimization: We don't need to handle strings that are longer than 26 chars
+		// because a Double cannot be longer than 26 chars when converted to String.
+		if (length > 26) {
+			length = 26;
+		}
+
+		// Loop:
+		// If convervsion fails, try with one character less.
+		// 25fix will convert to 25 (any numeric prefix will work)
+		while (length > 0) {
+			try {
+				return Double.parseDouble(s.substring(0, length));
+			} catch (NumberFormatException nfe) {
+				length--;
+			}
+		}
+
+		// Failed (not even with one char)
+		return 0;
 	}
 
 	/**
@@ -112,15 +129,63 @@ public class Printf4J {
 	 * @return the "long" value of o, or 0 if invalid
 	 */
 	public static long toLong(final Object o) {
+
+		if (o == null) {
+			return 0;
+		}
+
 		if (o instanceof Number) {
 			return ((Number)o).longValue();
-		} else {
-			try {
-				return Long.parseLong(o.toString());
-			} catch (NumberFormatException nfe) {
-				return 0;
-			}
 		}
+
+		if (o instanceof Character) {
+			return (long)((Character)o).charValue();
+		}
+
+		// Try to convert the string to a number.
+		String s = o.toString();
+		int length = s.length();
+
+		// Optimization: We don't need to handle strings that are longer than 20 chars
+		// because a Long cannot be longer than 20 chars when converted to String.
+		if (length > 20) {
+			length = 20;
+		}
+
+		// Loop:
+		// If convervsion fails, try with one character less.
+		// 25fix will convert to 25 (any numeric prefix will work)
+		while (length > 0) {
+			try {
+				return Long.parseLong(s, 0, length, 10);
+			} catch (NumberFormatException nfe) {
+				length--;
+			}
+
+		}
+		// Failed (not even with one char)
+		return 0;
+	}
+
+	/**
+	 * Convert a String, Long, or Double to char.
+	 *
+	 * @param o Object to convert.
+	 *
+	 * @return the char value of o, or 0 if invalid
+	 */
+	public static char toChar(final Object o) {
+		if (o == null) {
+			return Character.MIN_VALUE;
+		}
+		if (o instanceof Number) {
+			return (char)((Number)o).intValue();
+		}
+		String s = o.toString();
+		if (s.isEmpty()) {
+			return Character.MIN_VALUE;
+		}
+		return s.charAt(0);
 	}
 
 
@@ -247,12 +312,12 @@ public class Printf4J {
 				}
 				// '*' width uses an argument
 				if ("*".equals(width)) {
-					width = Integer.valueOf((int)arr[argumentIndex]).toString();
+					width = String.valueOf((int)arr[argumentIndex]);
 					argumentIndex++;
 				}
 				// If width is specified, reduce it by the length of the prefix
 				if (width != null && prefix != null) {
-					int newWidth = Integer.valueOf(width) - prefix.length();
+					int newWidth = Integer.parseInt(width) - prefix.length();
 					if (newWidth < 0) {
 						newWidth = 0;
 					}
@@ -325,7 +390,7 @@ public class Printf4J {
 								&& (toLong(arr[argumentIndex]) < 0
 									|| options != null && options.contains("+")))
 							{
-								precision = Integer.toString(Integer.valueOf(precision) + 1);
+								precision = String.valueOf(Integer.parseInt(precision) + 1);
 							}
 							integerFormatStringBuilder.append(precision);
 							integerFormatStringBuilder.append(conversion);
@@ -375,6 +440,12 @@ public class Printf4J {
 						}
 					}
 					percentMatcher.appendReplacement(formatResultBuilder, tempFormatResult);
+					break;
+
+				// Char: simple, we just need to make sure to pass a char or integer
+				case "c":
+					percentMatcher.appendReplacement(formatResultBuilder, "");
+					formatter.format(formatSpecifier, toChar(arr[argumentIndex]));
 					break;
 
 				default:

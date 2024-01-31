@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="${project.name}">
+
+	<skin>
+		<groupId>org.sentrysoftware.maven</groupId>
+		<artifactId>sentry-maven-skin</artifactId>
+		<version>6.2.00</version>
+	</skin>
+
+	<custom>
+		<noDefaultLinks>true</noDefaultLinks>
+		<keywords>awk,printf,gawk,bwk,C</keywords>
+	</custom>
+
+	<bannerLeft>
+		<src>images/sentry-logo-white.png</src>
+		<href>https://sentrysoftware.org</href>
+	</bannerLeft>
+
+	<body>
+
+		<links>
+			<item name="GitHub Repository" href="${project.scm.url}" />
+			<item name="Jawk" href="https://sentrysoftware.org/jawk" />
+			<item name="Linux fprintf(...) Man Page" href="https://man7.org/linux/man-pages/man3/fprintf.3p.html" />
+		</links>
+
+		<menu name="User Documentation">
+			<item name="Getting Started" href="index.html" />
+		</menu>
+
+		<menu ref="reports" />
+	</body>
+
+</project>

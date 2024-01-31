@@ -56,10 +56,8 @@
 	</developers>
 
 	<properties>
-		<!-- Java 11 -->
-		<maven.compiler.source>11</maven.compiler.source>
-		<maven.compiler.target>11</maven.compiler.target>
-		<maven.compiler.release>11</maven.compiler.release>
+		<!-- Java 8 -->
+		<maven.compiler.release>8</maven.compiler.release>
 
 		<!-- UTF-8 -->
 		<project.build.encoding>UTF-8</project.build.encoding>
@@ -108,7 +106,7 @@
 					<version>3.6.3</version>
 					<configuration>
 						<detectJavaApiLink>false</detectJavaApiLink>
-						<source>${maven.compiler.target}</source>
+						<source>${maven.compiler.release}</source>
 						<show>public</show>
 						<notimestamp>true</notimestamp>
 					</configuration>
@@ -247,7 +245,7 @@
 					<linkXref>true</linkXref>
 					<sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>
 					<minimumTokens>50</minimumTokens>
-					<targetJdk>${maven.compiler.target}</targetJdk>
+					<targetJdk>${maven.compiler.release}</targetJdk>
 					<rulesets>
 						<ruleset>src/test/resources/pmd.xml</ruleset>
 					</rulesets>

@@ -157,7 +157,7 @@ public class Printf4J {
 		// 25fix will convert to 25 (any numeric prefix will work)
 		while (length > 0) {
 			try {
-				return Long.parseLong(s, 0, length, 10);
+				return Long.parseLong(s.substring(0, length));
 			} catch (NumberFormatException nfe) {
 				length--;
 			}
@@ -205,8 +205,8 @@ public class Printf4J {
 		// adapt the behavior of Java's Formatter to be like C's sprintf()
 		Matcher percentMatcher = PERCENT_PATTERN.matcher(format);
 
-		// Result will be hold in a StringBuilder
-		StringBuilder formatResultBuilder = new StringBuilder();
+		// Result will be hold in a StringBuffer (for Java 8 compatibility)
+		StringBuffer formatResultBuilder = new StringBuffer();
 
 		// We will use a single Formatter instance (closeable)
 		try (Formatter formatter = new Formatter(formatResultBuilder, locale)) {

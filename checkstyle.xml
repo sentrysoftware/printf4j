@@ -46,15 +46,16 @@
 
 	<!-- Checks whether files end with a new line.                        -->
 	<!-- See http://checkstyle.sf.net/config_misc.html#NewlineAtEndOfFile -->
-	<!----><module name="NewlineAtEndOfFile"/>
+	<!---->
+	<module name="NewlineAtEndOfFile" />
 
 	<!-- Checks that property files contain the same keys.         -->
 	<!-- See http://checkstyle.sf.net/config_misc.html#Translation -->
-	<module name="Translation"/>
+	<module name="Translation" />
 
 	<!-- Checks for Size Violations.                    -->
 	<!-- See http://checkstyle.sf.net/config_sizes.html -->
-	<module name="FileLength"/>
+	<module name="FileLength" />
 
 	<!-- Checks for tab indentation -->
 	<module name="RegexpSingleline">
@@ -65,11 +66,15 @@
 	<!-- Miscellaneous other checks.                   -->
 	<!-- See http://checkstyle.sf.net/config_misc.html -->
 	<module name="RegexpSingleline">
-		<property name="format" value="\s+$"/>
-		<property name="minimum" value="0"/>
-		<property name="maximum" value="0"/>
-		<property name="message" value="Line has trailing spaces."/>
+		<property name="format" value="\s+$" />
+		<property name="minimum" value="0" />
+		<property name="maximum" value="0" />
+		<property name="message" value="Line has trailing spaces." />
 	</module>
+
+	<!-- Filter out Checkstyle warnings that have been suppressed with the
+	@SuppressWarnings annotation -->
+	<module name="SuppressWarningsFilter" />
 
 	<module name="TreeWalker">
 
@@ -89,6 +94,8 @@
 			<property name="checkEmptyJavadoc" value="true"/>
 		</module>-->
 
+		<!-- Make the @SuppressWarnings annotations available to Checkstyle -->
+		<module name="SuppressWarningsHolder" />
 
 		<!-- Checks for Naming Conventions.                  -->
 		<!-- See http://checkstyle.sf.net/config_naming.html -->

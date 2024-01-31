@@ -199,6 +199,7 @@ public class Printf4J {
 	 * @param arr Arguments to format.
 	 * @return The formatted string
 	 */
+	@SuppressWarnings("checkstyle:methodlength")
 	public static String sprintf(final Locale locale, final String format, final Object... arr) {
 
 		// We're processing each format specifier (%d, %-12s, etc.) and will slightly
@@ -456,7 +457,7 @@ public class Printf4J {
 				// Pass to the next argument (for the next format specifier we'll find)
 				argumentIndex++;
 			}
-		} catch (IllegalFormatException e) { /* do nothing */ }
+		} catch (IllegalFormatException e) { /* do nothing */ } // NOPMD
 
 		// Now append the rest that didn't match our pattern
 		percentMatcher.appendTail(formatResultBuilder);
